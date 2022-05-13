@@ -3,6 +3,7 @@ import dh
 import sorteando_paises
 import adiciona_em_ordem
 import sorteia_letra
+import colorama
 
 EARTH_RADIUS = 6371
 
@@ -3863,7 +3864,7 @@ while tentativas > 0:
                 lista_paises = []
 
                 tentativas -=1
-                print(f"Você tem {tentativas} tentativa(s)")            
+                print(f"\nVocê tem {tentativas} tentativa(s)")            
             else:
                 print("Você ja tentou esse País")
 
@@ -3897,13 +3898,16 @@ while tentativas > 0:
 
         else:
             print("País Desconhecido")
+    if tentativas <= 0 and tentativa != escolhido:
+      print(f"{colorama.Fore.RED}\nHAHAHAHAHAHAHAHAHAHAHAHAHA " + f"VOCÊ PERDEU SEU FRACASSADO. \nVOCÊ É UM VERDADEIRO MERDA. \n O PAÍS OBVIAMENTE ERA: {escolhido}{colorama.Style.RESET_ALL}")
     if tentativas <= 0 or tentativa == escolhido:
-        jogar_novamente = input('Jogar novamente? [s|n]: ')
+        jogar_novamente = input('\nJogar novamente? [s|n]: ')
         if jogar_novamente == "s":
             tentativas = 20
             lista_em_ordem = []
             lista_paises = []
             lista_cores = []
+            lista_nao_repetir = []
             escolhido = sorteando_paises.sorteia_pais(dados)
             print("\nUm país foi escolhido. Tente adivinhar")
             print("Você tem 20 tentativas\n")
