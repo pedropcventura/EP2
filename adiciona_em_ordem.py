@@ -1,21 +1,24 @@
-def adiciona_em_ordem(nome, distancia, lista):
-    lista_n = []
-    lista_n == lista_n.append(nome)
-    lista_n == lista_n.append(distancia)
+def adiciona_em_ordem(nome_pais, distancia, lista_paises):
 
-    i = 1
-    j = 0
-    
-    if len(lista) == 0:
-        lista.append(lista_n)
-    for pais in lista:
-        if nome in pais:
-            return lista 
-    for pais in lista:
-        if pais[i] > distancia:
-            lista.insert(j,lista_n)
-            return lista
-        elif pais[i] < distancia:
-            lista.insert(j+1,lista_n)
-            return lista
-        j += 1
+    adicionar = [nome_pais,distancia]
+    i = 0
+    if len(lista_paises) > 0 :
+        tamanho = len(lista_paises)
+        ultimo_ele = lista_paises[tamanho-1]   
+        distancia_ultimo_elemnto = ultimo_ele[1]
+    if len(lista_paises) == 0:
+        resposta = lista_paises.append(adicionar)
+        
+    for sublista in lista_paises:
+        if sublista[0] == nome_pais:
+            return lista_paises
+            
+        if sublista[0] != nome_pais:
+            if sublista[1] >= distancia:
+                lista_paises.insert(i,adicionar)
+                return lista_paises
+            if distancia > distancia_ultimo_elemnto:
+                lista_paises.append(adicionar)
+                return lista_paises
+                        
+        i += 1

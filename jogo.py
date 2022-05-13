@@ -3830,25 +3830,38 @@ print(" ============================ \n|                            |\n| Bem-vin
 #jogar_novamente = input("Jogar Novamente? [s|n]")
 lista_paises = []
 lista_em_ordem = []
+escolhido = sorteando_paises.sorteia_pais(dados)
+
 while tentativas > 0:
-    escolhido = sorteando_paises.sorteia_pais(dados)
     tentativa = input("Qual seu palpite? ")
     if tentativa == escolhido:
-        print("Bacana, você acertou seu merda!")
+        print("\n---------------------------------\n|Bacana, você acertou seu merda!|\n---------------------------------\n")
+    else:    
+        if tentativa in dados:
+            if tentativa not in lista_paises:
+                lista_paises.append(tentativa)
+                distancia = dh.haversine(EARTH_RADIUS, dados[tentativa]["geo"]["latitude"], dados[tentativa]["geo"]["longitude"], dados[escolhido]["geo"]["latitude"], dados[escolhido]["geo"]["longitude"])
+                lista_paises.append(distancia)
+                lista_em_ordem = adiciona_em_ordem.adiciona_em_ordem(tentativa, distancia, lista_em_ordem)
+                for par_pais_dist in lista_em_ordem:
+                    print("    {:.0f}".format(par_pais_dist[1]) + " km -> " + par_pais_dist[0])
+                lista_paises = []
 
-    if tentativa in dados:
-        if tentativa not in lista_paises:
-            lista_paises.append(tentativa)
-            distancia = dh.haversine(EARTH_RADIUS, dados[tentativa]["geo"]["latitude"], dados[tentativa]["geo"]["longitude"], dados[escolhido]["geo"]["latitude"], dados[escolhido]["geo"]["longitude"])
-            lista_paises.append(distancia)
-            lista_em_ordem = adiciona_em_ordem.adiciona_em_ordem(tentativa, distancia, lista_em_ordem)
-            for par_pais_dist in lista_em_ordem:
-                print(par_pais_dist[0] + ": " + "{:.0f}".format(par_pais_dist[1]))
-            lista_paises = []
-
-            tentativas -=1
-            print(f"Você tem {tentativas} tentativa(s)")            
+                tentativas -=1
+                print(f"Você tem {tentativas} tentativa(s)")            
+            else:
+                print("Você ja tentou esse País")
         else:
-            print("Você ja tentou esse País")
-    else:
-        print("País Desconhecido")
+            print("País Desconhecido")
+    if tentativas == 0 or tentativa == escolhido:
+        jogar_novamente = input('Jogar novamente? [s|n]: ')
+        if jogar_novamente == "s":
+            tentativas = 20
+            lista_em_ordem = []
+            lista_paises = []
+            escolhido = sorteando_paises.sorteia_pais(dados)
+            print("\nUm país foi escolhido. Tente adivinhar")
+            print("Você tem 20 tentativas\n")
+        else:
+            print("\n SAI DAQUI SEU MERDA")
+            tentativas = 0
