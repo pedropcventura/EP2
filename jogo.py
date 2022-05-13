@@ -2,6 +2,7 @@ import nbp
 import dh
 import sorteando_paises
 import adiciona_em_ordem
+import sorteia_letra
 
 EARTH_RADIUS = 6371
 
@@ -3825,12 +3826,25 @@ dados = nbp.normaliza(DADOS)
 
 
 tentativas = 20
-print(" ============================ \n|                            |\n| Bem-vindo ao Insper Países |\n|                            |\n ==== Design de Software ==== \n\n Comandos:\n\n    dica       - entra no mercado de dicas\n    desisto    - desiste da rodada\n    inventario - exibe sua posição\n\nUm país foi escolhido, tente adivinhar!\nVocê tem 20 tentativa(s)")
+print(" ============================ \n|                            |\n| Bem-vindo ao Insper Países |\n|                            |\n ==== Design de Software ==== \n\n Comandos:\n\n    dica       - entra no mercado de dicas\n\nUm país foi escolhido, tente adivinhar!\nVocê tem 20 tentativa(s)")
 
 #jogar_novamente = input("Jogar Novamente? [s|n]")
 lista_paises = []
 lista_em_ordem = []
 escolhido = sorteando_paises.sorteia_pais(dados)
+lista_cores = []
+lista_nao_repetir = []
+
+def maior_cor(dic, pais):
+    lista_cor = []
+    for c, numero in dic.items():
+        if numero > 0:
+            lista_cor.append(c)
+            
+    return lista_cor
+
+
+
 
 while tentativas > 0:
     tentativa = input("Qual seu palpite? ")
@@ -3838,7 +3852,8 @@ while tentativas > 0:
         print("\n---------------------------------\n|Bacana, você acertou seu merda!|\n---------------------------------\n")
     else:    
         if tentativa in dados:
-            if tentativa not in lista_paises:
+            if tentativa not in lista_nao_repetir:
+                lista_nao_repetir.append(tentativa)
                 lista_paises.append(tentativa)
                 distancia = dh.haversine(EARTH_RADIUS, dados[tentativa]["geo"]["latitude"], dados[tentativa]["geo"]["longitude"], dados[escolhido]["geo"]["latitude"], dados[escolhido]["geo"]["longitude"])
                 lista_paises.append(distancia)
@@ -3851,14 +3866,44 @@ while tentativas > 0:
                 print(f"Você tem {tentativas} tentativa(s)")            
             else:
                 print("Você ja tentou esse País")
+
+
+        elif tentativa == "dica":
+            escolhe_dica = input("Mercado de Dicas\n----------------------------------------\n1. Cor da bandeira  - custa 4 tentativas\n2. Letra da capital - custa 3 tentativas\n3. Área             - custa 6 tentativas\n4. População        - custa 5 tentativas\n5. Continente       - custa 7 tentativas\n0. Sem dica\n----------------------------------------\nEscolha sua opção [0|1|2|3|4|5]: ")
+            if escolhe_dica == "1":
+                lista_cores.append(maior_cor(dados[escolhido]["bandeira"], escolhido))
+                print("Estas são as cores da bandeira: ")
+                for sublista in lista_cores:
+                    for cores in sublista:
+                        print(cores)
+                tentativas -= 4
+            elif escolhe_dica == "2":
+                letra_sorteada = sorteia_letra.sorteia_letra(escolhido, ['.', ',', '-', ';', ' '])
+                print("Uma letra da Capital: "+ letra_sorteada)
+                tentativas -= 3
+            elif escolhe_dica == "3":
+                print("A area do país é: " + str(dados[escolhido]["area"]) + " km2")
+                tentativas -= 6
+            elif escolhe_dica == "4":
+                print("A população do país é: " + str(dados[escolhido]["populacao"]))
+                tentativas -= 5
+            elif escolhe_dica == "5":
+                print("O continente é: " + str(dados[escolhido]["continente"]))
+                tentativas -=7
+
+
+
+
+
         else:
             print("País Desconhecido")
-    if tentativas == 0 or tentativa == escolhido:
+    if tentativas <= 0 or tentativa == escolhido:
         jogar_novamente = input('Jogar novamente? [s|n]: ')
         if jogar_novamente == "s":
             tentativas = 20
             lista_em_ordem = []
             lista_paises = []
+            lista_cores = []
             escolhido = sorteando_paises.sorteia_pais(dados)
             print("\nUm país foi escolhido. Tente adivinhar")
             print("Você tem 20 tentativas\n")
