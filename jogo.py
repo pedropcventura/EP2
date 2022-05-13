@@ -1,6 +1,7 @@
 import nbp
 import dh
 import sorteando_paises
+import adiciona_em_ordem
 
 EARTH_RADIUS = 6371
 
@@ -3821,20 +3822,32 @@ DADOS = {
 
 dados = nbp.normaliza(DADOS)
 
+
+
 tentativas = 20
 print(" ============================ \n|                            |\n| Bem-vindo ao Insper Países |\n|                            |\n ==== Design de Software ==== \n\n Comandos:\n\n    dica       - entra no mercado de dicas\n    desisto    - desiste da rodada\n    inventario - exibe sua posição\n\nUm país foi escolhido, tente adivinhar!\nVocê tem 20 tentativa(s)")
 
 #jogar_novamente = input("Jogar Novamente? [s|n]")
 lista_paises = []
+lista_em_ordem = []
 while tentativas > 0:
     escolhido = sorteando_paises.sorteia_pais(dados)
     tentativa = input("Qual seu palpite? ")
     if tentativa == escolhido:
         print("Bacana, você acertou seu merda!")
+
     if tentativa in dados:
         if tentativa not in lista_paises:
             lista_paises.append(tentativa)
-            tentativas -=1            
+            distancia = dh.haversine(EARTH_RADIUS, dados[tentativa]["geo"]["latitude"], dados[tentativa]["geo"]["longitude"], dados[escolhido]["geo"]["latitude"], dados[escolhido]["geo"]["longitude"])
+            lista_paises.append(distancia)
+            lista_em_ordem = adiciona_em_ordem.adiciona_em_ordem(tentativa, distancia, lista_em_ordem)
+            for par_pais_dist in lista_em_ordem:
+                print(par_pais_dist[0] + ": " + "{:.0f}".format(par_pais_dist[1]))
+            lista_paises = []
+
+            tentativas -=1
+            print(f"Você tem {tentativas} tentativa(s)")            
         else:
             print("Você ja tentou esse País")
     else:
