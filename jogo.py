@@ -3,7 +3,14 @@ import dh
 import sorteando_paises
 import adiciona_em_ordem
 import sorteia_letra
+import esta_na_lista
 import colorama
+
+dica1 = True
+dica2 = True
+dica3 = True
+dica4 = True
+dica5 = True
 
 EARTH_RADIUS = 6371
 
@@ -3836,6 +3843,8 @@ escolhido = sorteando_paises.sorteia_pais(dados)
 lista_cores = []
 lista_nao_repetir = []
 
+
+
 def maior_cor(dic, pais):
     lista_cor = []
     for c, numero in dic.items():
@@ -3850,7 +3859,7 @@ def maior_cor(dic, pais):
 while tentativas > 0:
     tentativa = input("Qual seu palpite? ")
     if tentativa == escolhido:
-        print("\n---------------------------------\n|Bacana, você acertou seu merda!|\n---------------------------------\n")
+        print(f"{colorama.Fore.GREEN}\n---------------------------------\n|Bacana, você acertou seu merda!|\n---------------------------------\n{colorama.Style.RESET_ALL}")
     else:    
         if tentativa in dados:
             if tentativa not in lista_nao_repetir:
@@ -3860,7 +3869,13 @@ while tentativas > 0:
                 lista_paises.append(distancia)
                 lista_em_ordem = adiciona_em_ordem.adiciona_em_ordem(tentativa, distancia, lista_em_ordem)
                 for par_pais_dist in lista_em_ordem:
-                    print("    {:.0f}".format(par_pais_dist[1]) + " km -> " + par_pais_dist[0])
+                  if par_pais_dist[1] < 1500:
+                    print(f"{colorama.Fore.GREEN}" + "    {:.0f}".format(par_pais_dist[1]) + f"{colorama.Fore.GREEN} km -> {colorama.Style.RESET_ALL}" + f"{colorama.Fore.GREEN}" + f"{par_pais_dist[0]}" + f"{colorama.Style.RESET_ALL}")
+                  elif par_pais_dist[1] < 3500:
+                    print(f"{colorama.Fore.YELLOW}" + "    {:.0f}".format(par_pais_dist[1]) + f"{colorama.Fore.YELLOW} km -> {colorama.Style.RESET_ALL}" + f"{colorama.Fore.YELLOW}" + f"{par_pais_dist[0]}" + f"{colorama.Style.RESET_ALL}")
+                  elif par_pais_dist[1] >= 3500:
+                    print(f"{colorama.Fore.RED}" + "    {:.0f}".format(par_pais_dist[1]) + f"{colorama.Fore.RED} km -> {colorama.Style.RESET_ALL}" + f"{colorama.Fore.RED}" + f"{par_pais_dist[0]}" + f"{colorama.Style.RESET_ALL}")
+                  
                 lista_paises = []
 
                 tentativas -=1
@@ -3870,27 +3885,51 @@ while tentativas > 0:
 
 
         elif tentativa == "dica":
-            escolhe_dica = input("Mercado de Dicas\n----------------------------------------\n1. Cor da bandeira  - custa 4 tentativas\n2. Letra da capital - custa 3 tentativas\n3. Área             - custa 6 tentativas\n4. População        - custa 5 tentativas\n5. Continente       - custa 7 tentativas\n0. Sem dica\n----------------------------------------\nEscolha sua opção [0|1|2|3|4|5]: ")
-            if escolhe_dica == "1":
-                lista_cores.append(maior_cor(dados[escolhido]["bandeira"], escolhido))
-                print("Estas são as cores da bandeira: ")
-                for sublista in lista_cores:
-                    for cores in sublista:
-                        print(cores)
-                tentativas -= 4
-            elif escolhe_dica == "2":
-                letra_sorteada = sorteia_letra.sorteia_letra(escolhido, ['.', ',', '-', ';', ' '])
-                print("Uma letra da Capital: "+ letra_sorteada)
-                tentativas -= 3
-            elif escolhe_dica == "3":
-                print("A area do país é: " + str(dados[escolhido]["area"]) + " km2")
-                tentativas -= 6
-            elif escolhe_dica == "4":
-                print("A população do país é: " + str(dados[escolhido]["populacao"]))
-                tentativas -= 5
-            elif escolhe_dica == "5":
-                print("O continente é: " + str(dados[escolhido]["continente"]))
-                tentativas -=7
+          
+
+          print_escolhe_dica = print("Mercado de Dicas\n----------------------------------------\n1. Cor da bandeira  - custa 4 tentativas\n2. Letra da capital - custa 3 tentativas\n3. Área             - custa 6 tentativas\n4. População        - custa 5 tentativas\n5. Continente       - custa 7 tentativas\n---------------------------------------- ")
+          
+          
+          if dica1 == False:
+            print(f"{colorama.Fore.RED}     *****DICA 1 INDISPONÍVEL*****{colorama.Style.RESET_ALL}")
+          if dica2 == False:
+            print(f"{colorama.Fore.RED}     *****DICA 2 INDISPONÍVEL*****{colorama.Style.RESET_ALL}")
+          if dica3 == False:
+            print(f"{colorama.Fore.RED}     *****DICA 3 INDISPONÍVEL*****{colorama.Style.RESET_ALL}")
+          if dica4 == False:
+            print(f"{colorama.Fore.RED}     *****DICA 4 INDISPONÍVEL*****{colorama.Style.RESET_ALL}")
+          if dica5 == False:
+            print(f"{colorama.Fore.RED}     *****DICA 5 INDISPONÍVEL*****{colorama.Style.RESET_ALL}")
+          
+          escolhe_dica = input("\nEscolha sua opção [1|2|3|4|5]: ")
+
+          if escolhe_dica == "1" and tentativas > 4 and dica1 == True:
+              lista_cores.append(maior_cor(dados[escolhido]["bandeira"], escolhido))
+              print("\nEstas são as cores da bandeira: ")
+              for sublista in lista_cores:
+                  for cores in sublista:
+                      print("   -> " + cores)
+              tentativas -= 4
+              dica1 = False
+          elif escolhe_dica == "2" and tentativas > 3 and dica2 == True:
+              letra_sorteada = sorteia_letra.sorteia_letra(escolhido, ['.', ',', '-', ';', ' '])
+              print("Uma letra da Capital: "+ letra_sorteada)
+              tentativas -= 3
+              dica2 = False
+          elif escolhe_dica == "3" and tentativas > 6 and dica3 == True:
+              print("A area do país é: " + str(dados[escolhido]["area"]) + " km2")
+              tentativas -= 6
+              dica3 = False
+          elif escolhe_dica == "4" and tentativas > 5 and dica4 == True:
+              print("A população do país é: " + str(dados[escolhido]["populacao"]))
+              tentativas -= 5
+              dica4 = False
+          elif escolhe_dica == "5" and tentativas > 7 and dica5 == True:
+              print("O continente é: " + str(dados[escolhido]["continente"]))
+              tentativas -=7
+              dica5 = False
+          else:
+            print(f"{colorama.Fore.RED}\nOpção Idisponível. Continue tentando países\n{colorama.Style.RESET_ALL}")
 
 
 
@@ -3909,8 +3948,13 @@ while tentativas > 0:
             lista_cores = []
             lista_nao_repetir = []
             escolhido = sorteando_paises.sorteia_pais(dados)
+            dica1 = True
+            dica2 = True
+            dica3 = True
+            dica4 = True 
+            dica5 = True
             print("\nUm país foi escolhido. Tente adivinhar")
             print("Você tem 20 tentativas\n")
         else:
-            print("\n SAI DAQUI SEU MERDA")
+            print(f"{colorama.Fore.RED}\n SAI DAQUI SEU MERDA{colorama.Style.RESET_ALL}")
             tentativas = 0
